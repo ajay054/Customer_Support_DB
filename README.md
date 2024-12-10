@@ -1,149 +1,156 @@
-End-to-End Data Pipeline with Delta Live Tables and Dashboards
+# Customer Support System
 
-Overview This document provides a step-by-step guide to implementing a data pipeline in Databricks using Delta Live Tables (DLT), transforming the data, and creating interactive dashboards for visualization.
+## 📋 **Project Overview**
+The **Customer Support System** is a comprehensive solution designed to streamline and automate customer service operations. This project aims to improve customer experience, increase agent productivity, and provide valuable insights for decision-making.
 
-Pipeline Overview
+The system includes key features such as:
+- **Ticket Management**: Create, update, and resolve customer support tickets.
+- **Customer Profiles**: View detailed information about customers to provide personalized support.
+- **Knowledge Base**: A self-service portal where customers can search for solutions.
+- **Reports & Analytics**: Generate insightful reports to track support performance and customer satisfaction.
 
-Data Source
+---
 
-Source: Azure Blob Storage
+## 🚀 **Features**
+1. **Ticketing System**: 
+   - Create, update, and manage customer support tickets.
+   - Assign tickets to specific agents or teams.
 
-Format: Parquet files
+2. **Customer Management**:
+   - View and update customer profiles.
+   - Access customer history and support interactions.
 
-Schema: support_id: integer customer_id: integer interaction_date: timestamp issue_description: string resolution_status: string Pipeline Steps
+3. **Knowledge Base**:
+   - Self-service knowledge articles to empower customers.
+   - Reduce the load on support teams by enabling customer self-service.
 
-Ingest Raw Data: Read data from Azure Blob Storage into a raw Delta Live Table.
-Process Data: Transform and clean data (e.g., casting types, creating calculated fields).
-Visualize Data: Use Databricks SQL to create dashboards for interactive analysis.
-Create Delta Live Tables (DLT)
-Ingest Raw Data
+4. **Reports & Analytics**:
+   - Visual dashboards for tracking support KPIs (Key Performance Indicators).
+   - Exportable reports for further analysis.
 
-The raw data is read from Azure Blob Storage and stored in a Delta table. Type mismatches are resolved by casting support_id and customer_id to STRING.
+---
+
+## 🛠️ **Technology Stack**
+The project uses the following technologies and tools:
+- **Programming Languages**: Python, JavaScript
+- **Frontend**: HTML, CSS, JavaScript (React, Vue.js, or another framework if applicable)
+- **Backend**: Flask, Django, or Node.js (depending on your implementation)
+- **Database**: PostgreSQL, MySQL, or any RDBMS
+- **Version Control**: Git & GitHub for repository management
+- **Cloud/Deployment**: AWS, Azure, or GCP for cloud deployment
+- **Containerization**: Docker (Optional)
+- **CI/CD**: GitHub Actions or Jenkins for continuous integration/deployment
+
+---
+
+## 🧰 **Project Setup**
+Follow the steps below to set up the project locally.
+
+### **1️⃣ Prerequisites**
+Ensure you have the following installed on your system:
+- **Python 3.8+**
+- **Git**
+- **PostgreSQL or MySQL (for the database)**
+- **Node.js (if a frontend framework is used)**
+- **Docker (optional, for containerization)**
+
+---
+
+### **2️⃣ Clone the Repository**
+```bash
+git clone https://github.com/your-username/your-repo-name.git
+cd Customer_Support
+
+3️⃣ Set Up Virtual Environment
+python3 -m venv venv
+source venv/bin/activate  # For Linux/MacOS
+venv\Scripts\activate.bat # For Windows
+
+4️⃣ Install Dependencies
+Install the dependencies listed in the requirements.txt file:
+
+bash
+
+pip install -r requirements.txt
+5️⃣ Database Setup
+Run the following commands to create and initialize the database:
+
+sql
+
+CREATE DATABASE customer_support_db;
+Update the .env file with the correct database configuration.
+
+6️⃣ Run Migrations
+bash
+
+python manage.py migrate
+7️⃣ Run the Application
+Start the development server:
+
+bash
+
+python manage.py runserver
+The application will be available at http://localhost:8000.
+
+📘 Folder Structure
+php
+
+Customer_Support/
+├── manage.py             # Main entry point of the Django or Flask app
+├── requirements.txt      # Python dependencies
+├── README.md             # Project documentation
+├── .gitignore            # Files and folders to be ignored by Git
+├── customer_support/     # Core application files
+│   ├── __init__.py
+│   ├── settings.py       # App settings (Django/Flask)
+│   ├── urls.py           # URL definitions
+│   └── views.py          # View logic for pages
+└── static/               # Static assets (CSS, JS, images)
+📈 Usage
+Visit the Dashboard to track support ticket trends and performance.
+Access the Ticketing System to view, create, and manage customer tickets.
+Use the Knowledge Base for quick self-service support.
+📊 Screenshots
+Here are some sample screenshots of the Customer Support System.
+
+Dashboard	Ticket Management
+⚙️ Environment Variables
+Create a .env file at the root of the project to configure the environment variables. Example:
+
+env
+
+DB_NAME=customer_support_db
+DB_USER=postgres
+DB_PASSWORD=your_password
+DB_HOST=localhost
+DB_PORT=5432
+🧪 Running Tests
+To ensure the app works as expected, you can run unit tests using:
+
+bash
+
+python manage.py test
+📜 Contributing
+We welcome contributions from the community. To contribute:
+
+Fork the repository.
+Create a new feature branch.
+Commit your changes.
+Create a pull request.
+🧑‍💻 Authors & Contributors
+Ajay Gurram - Senior Data Engineer
+Contributors are welcome to submit PRs for bug fixes, new features, and updates.
+📄 License
+This project is licensed under the MIT License. See the LICENSE file for more details.
+
+📞 Contact
+For support or questions, feel free to reach out:
+
+Email: hi@ajayconnect.com
+Website: ajayconnect.com
+Happy coding! 🚀
 
 
-# import dlt
-# from pyspark.sql.functions import col
 
-# @dlt.table(
-#     comment="Raw customer support data ingested from Azure Blob Storage with type casting."
-# )
-# def raw_customer_support_data():
-#     return (
-#         spark.read.format("parquet")
+---
 
-Process Data
-
-Create a processed Delta Live Table with calculated fields:
-
-priority: Derived from resolution_status.
-
-Transformations:
-
-High priority: resolution_status = "Unresolved"
-
-Medium priority: resolution_status = "Pending"
-
-Low priority: Default value.
-
-
-# @dlt.table(
-#     comment="Processed customer support data with added transformations."
- )
-# def processed_customer_support_data():
-#     return (
-#         dlt.read("raw_customer_support_data")
-#         .withColumn("priority", 
-#                     when(col("resolution_status") == "Unresolved", "High")
-#                     .when(col("resolution_status") == "Pending", "Medium")
-#                     .otherwise("Low"))
-
-Run the Delta Live Table Pipeline
-Configure Pipeline:
-
-Target: default schema (or a custom schema configured in the pipeline).
-
-Storage location: Azure Blob Storage.
-
-Start the Pipeline:
-
-Open the Delta Live Tables interface in Databricks.
-
-Run the pipeline in Development Mode for testing.
-
-Once verified, switch to Production Mode.
-
-Create Dashboards in Databricks SQL
-
-Visualizations
-
-Table of Most Repeated Issues
-
-
-# %sql
-# SELECT issue_description, COUNT(*) as count
-# FROM processed_customer_support_data
-# GROUP BY issue_description
-# ORDER BY count DESC
-# LIMIT 10;
-
-Visualization: Simple table listing issue descriptions with their counts.
-
-Number of Support Interactions by Priority
-
-
-# %sql
-# SELECT priority, COUNT(support_id) as count
-# FROM processed_customer_support_data
-# GROUP BY priority
-# ORDER BY count DESC;
-
-Visualization: Bar chart showing the count of support interactions by priority.
-
-Resolution Status Distribution
-
-# %sql
-# SELECT resolution_status, COUNT(*) as count
-# FROM processed_customer_support_data
-# GROUP BY resolution_status;
-
-Visualization: Pie chart showing the proportion of records for each resolution status.
-
-Publish Dashboards
-
-Create Dashboard:
-
-Use Databricks SQL to add all visualizations to a single dashboard.
-
-Title: "Customer Support Analysis"
-
-Schedule Refresh:
-
-Configure the dashboard to refresh periodically (e.g., every hour) to ensure updated data.
-
-Share Dashboard:
-
-Share the dashboard with team members or stakeholders for collaborative analysis.
-
-Monitor the Pipeline and Dashboard
-
-Use the Delta Live Tables interface to monitor pipeline runs and ensure data freshness.
-
-Check logs for any failures and troubleshoot as needed.
-
-Best Practices
-
-Data Validation:
-
-Always inspect the source data schema using df.printSchema() before creating Delta Live Tables.
-
-Error Handling:
-
-Use .cast() to handle data type mismatches in the source data.
-
-Pipeline Optimization:
-
-Use mergeSchema if the source schema evolves over time.
-
-Visualization Updates:
-
-Periodically review dashboards to add or modify visualizations based on new requirements.
